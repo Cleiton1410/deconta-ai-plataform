@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
+import Link from "next/link"
+import { useCart } from "@/contexts/cart-context"
 
 // Função para gerar URLs de imagens do Unsplash baseadas no produto
 const getProductImage = (productName: string, category: string) => {
@@ -668,6 +670,8 @@ export default function DescontAiPlatform() {
   const [sortBy, setSortBy] = useState("discount")
   const [favorites, setFavorites] = useState<number[]>([])
 
+  const { addToCart, getTotalItems } = useCart()
+
   const categories = [
     "all",
     "Eletrônicos",
@@ -716,6 +720,10 @@ export default function DescontAiPlatform() {
     0,
   )
 
+  const handleAddToCart = (product: any) => {
+    addToCart(product)
+  }
+
   return (
     <div
       className="min-h-screen relative"
@@ -762,6 +770,21 @@ export default function DescontAiPlatform() {
                   <Heart className="w-4 h-4 mr-2" />
                   Favoritos ({favorites.length})
                 </Button>
+                <Link href="/carrinho">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-white/90 backdrop-blur-sm border-white/30 text-gray-800 hover:bg-white relative"
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Carrinho
+                    {getTotalItems() > 0 && (
+                      <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+                        {getTotalItems()}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -914,7 +937,13 @@ export default function DescontAiPlatform() {
                                 R$ {product.discountPrice.toLocaleString()}
                               </div>
                             </div>
-                            <Button className="w-full mt-3" size="sm">
+                            <Button
+                              className="w-full mt-3"
+                              size="sm"
+                              onClick={() =>
+                                handleAddToCart({ ...product, storeName: store.name, storeColor: store.color })
+                              }
+                            >
                               <ShoppingCart className="w-4 h-4 mr-2" />
                               Comprar
                             </Button>
@@ -978,7 +1007,7 @@ export default function DescontAiPlatform() {
                         R$ {product.discountPrice.toLocaleString()}
                       </div>
                     </div>
-                    <Button className="w-full mt-3">
+                    <Button className="w-full mt-3" onClick={() => handleAddToCart(product)}>
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Comprar
                     </Button>
