@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
   ArrowLeft,
   Plus,
@@ -25,10 +25,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useCart } from "@/contexts/cart-context"
 
-
-
-
-
 export default function CarrinhoPage() {
   const { items, removeFromCart, updateQuantity, getTotalItems, getSubtotal, getTotalPrice } = useCart()
   const [cep, setCep] = useState("")
@@ -37,21 +33,6 @@ export default function CarrinhoPage() {
   const [prazoEntrega, setPrazoEntrega] = useState("")
   const [cupomAplicado, setCupomAplicado] = useState("")
   const [desconto, setDesconto] = useState(0)
-  const[cuponsdisponiveis, setCupons]=useState([])
-  useEffect(()=>{
-  async function getcupons() {
-    
-    let requisicao=await fetch("http://localhost:3000/getcupons");
-    if (requisicao.ok) {
-      let cupons= await requisicao.json();
-      if (cupons.length>0) {
-       setCupons(cupons);
-      }
-      
-    }
-  }
-  getcupons();
-},[]);
 
   const calcularFrete = () => {
     if (cep.length === 8) {
@@ -63,9 +44,19 @@ export default function CarrinhoPage() {
   }
 
   const aplicarCupom = () => {
-  
-fetch(`http://localhost:3000/cupomdesconto/${cupom}`)
-   
+    const cuponsValidos = {
+      DESCONTO10: 10,
+      BEMVINDO: 15,
+      FRETEGRATIS: 0,
+    }
+
+    if (cuponsValidos[cupom as keyof typeof cuponsValidos]) {
+      const descontoPercentual = cuponsValidos[cupom as keyof typeof cuponsValidos]
+      const valorDesconto = (getSubtotal() * descontoPercentual) / 100
+      setDesconto(valorDesconto)
+      setCupomAplicado(cupom)
+      setCupom("")
+    }
   }
 
   const subtotal = getSubtotal()
