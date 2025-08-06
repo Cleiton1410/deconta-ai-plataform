@@ -16,8 +16,15 @@ export interface CartItem {
   eco: boolean
 }
 
+interface CupomData {
+  codigo: string
+  desconto: number
+  tipo: "percentual" | "fixo"
+}
+
 interface CartContextType {
   items: CartItem[]
+  cupomAplicado: CupomData | null
   addToCart: (product: any) => void
   removeFromCart: (id: number) => void
   updateQuantity: (id: number, quantity: number) => void
@@ -25,12 +32,16 @@ interface CartContextType {
   getTotalItems: () => number
   getTotalPrice: () => number
   getSubtotal: () => number
+  getDiscountAmount: () => number
+  aplicarCupom: (codigo: string) => boolean
+  removerCupom: () => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [cupomAplicado, setCupomAplicado] = useState<CupomData | null>(null)
 
   const addToCart = (product: any) => {
     setItems((prev) => {
@@ -56,6 +67,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([])
+    setCupomAplicado(null)
   }
 
   const getTotalItems = () => {
@@ -66,16 +78,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return items.reduce((total, item) => total + item.discountPrice * item.quantity, 0)
   }
 
+  const getDiscountAmount = () => {
+    if (!cupomAplicado) return 0
+
+    const subtotal = getSubtotal()
+    if (cupomAplicado.tipo === "percentual") {
+      return (subtotal * cupomAplicado.desconto) / 100
+    } else {
+      return cupomAplicado.desconto
+    }
+  }
+
   const getTotalPrice = () => {
     const subtotal = getSubtotal()
     const shipping = subtotal > 200 ? 0 : 15.9 // Frete grátis acima de R$ 200
-    return subtotal + shipping
+    const discount = getDiscountAmount()
+    return subtotal + shipping - discount
+  }
+
+  const aplicarCupom = (codigo: string): boolean => {
+    const cuponsValidos: Record<string, CupomData> = {
+      DESCONTO10: { codigo: "DESCONTO10", desconto: 10, tipo: "percentual" },
+      BEMVINDO: { codigo: "BEMVINDO", desconto: 15, tipo: "percentual" },
+      FRETEGRATIS: { codigo: "FRETEGRATIS", desconto: 15.9, tipo: "fixo" },
+      SAVE20: { codigo: "SAVE20", desconto: 20, tipo: "percentual" },
+    }
+
+    const cupom = cuponsValidos[codigo.toUpperCase()]
+    if (cupom) {
+      setCupomAplicado(cupom)
+      return true
+    }
+    return false
+  }
+
+  const removerCupom = () => {
+    setCupomAplicado(null)
   }
 
   return (
     <CartContext.Provider
       value={{
         items,
+        cupomAplicado,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -83,6 +128,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         getTotalItems,
         getTotalPrice,
         getSubtotal,
+        getDiscountAmount,
+        aplicarCupom,
+        removerCupom,
       }}
     >
       {children}
