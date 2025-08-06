@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+<<<<<<< HEAD
 import {
   ArrowLeft,
   CreditCard,
@@ -19,6 +20,9 @@ import {
   Phone,
   AlertCircle,
 } from "lucide-react"
+=======
+import { ArrowLeft, CreditCard, Smartphone, Receipt, Shield, Lock, User, MapPin, Eye, EyeOff, CheckCircle, Store, Truck, Clock, Phone, AlertCircle } from 'lucide-react'
+>>>>>>> testes
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -213,6 +217,7 @@ export default function CheckoutPage() {
     const dadosPedido = {
       dataCompra: new Date().toISOString(),
       dataEntrega: new Date(
+<<<<<<< HEAD
         Date.now() + (deliveryType === "retirada" ? 6 * 60 * 60 * 1000 : 3 * 24 * 60 * 60 * 1000),
       ).toISOString(),
       tipoEntrega: deliveryType,
@@ -221,6 +226,24 @@ export default function CheckoutPage() {
       frete: shipping,
       metodoPagamento: paymentMethod === "credit" ? "Cartão de Crédito" : paymentMethod === "pix" ? "PIX" : "Boleto",
       status: "pendente", // ou o valor inicial adequado para status
+=======
+        Date.now() +
+          (deliveryType === "retirada"
+            ? 6 * 60 * 60 * 1000
+            : 3 * 24 * 60 * 60 * 1000)
+      ).toISOString(),
+      tipoEntrega: deliveryType as "entrega" | "retirada",
+      total,
+      desconto: discount,
+      frete: shipping,
+      metodoPagamento:
+        paymentMethod === "credit"
+          ? "Cartão de Crédito"
+          : paymentMethod === "pix"
+          ? "PIX"
+          : "Boleto",
+      status: "confirmado",
+>>>>>>> testes
       cliente: {
         nome: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
@@ -252,9 +275,15 @@ export default function CheckoutPage() {
         quantidade: item.quantity,
         imagem: item.image,
       })),
+<<<<<<< HEAD
     }
 
     const novoId = criarPedido(dadosPedido)
+=======
+    };
+
+    const novoId = criarPedido(dadosPedido);
+>>>>>>> testes
     setPedidoId(novoId)
     clearCart()
     setIsProcessing(false)
