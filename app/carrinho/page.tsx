@@ -1,26 +1,7 @@
 "use client"
 
 import { useState } from "react"
-<<<<<<< HEAD
-import {
-  ArrowLeft,
-  Plus,
-  Minus,
-  Trash2,
-  Heart,
-  Truck,
-  Shield,
-  CreditCard,
-  Gift,
-  Calculator,
-  Tag,
-  Star,
-  Lock,
-  X,
-} from "lucide-react"
-=======
 import { ArrowLeft, Plus, Minus, Trash2, Heart, Truck, Shield, CreditCard, Gift, Calculator, Tag, Star, Lock, X } from 'lucide-react'
->>>>>>> testes
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -276,17 +257,10 @@ export default function CarrinhoPage() {
                     <span>Cupom de Desconto</span>
                   </CardTitle>
                 </CardHeader>
-<<<<<<< HEAD
-                <CardContent>
-                  {!cupomAplicado ? (
-                    <div className="space-y-4">
-                      <div className="flex space-x-2">
-=======
                 <CardContent className="p-4 md:p-6">
                   {!cupomAplicado ? (
                     <div className="space-y-4">
                       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
->>>>>>> testes
                         <Input
                           placeholder="Digite o cupom"
                           value={cupom}
@@ -294,25 +268,16 @@ export default function CarrinhoPage() {
                             setCupom(e.target.value.toUpperCase())
                             setCupomError("")
                           }}
-<<<<<<< HEAD
-                        />
-                        <Button onClick={handleAplicarCupom} disabled={!cupom.trim()}>
-=======
                           className="flex-1"
                         />
                         <Button onClick={handleAplicarCupom} disabled={!cupom.trim()} className="w-full md:w-auto">
->>>>>>> testes
                           Aplicar
                         </Button>
                       </div>
                       {cupomError && <div className="text-sm text-red-600 bg-red-50 p-2 rounded">{cupomError}</div>}
                       <div className="space-y-2">
                         <div className="text-sm font-semibold">Cupons Disponíveis:</div>
-<<<<<<< HEAD
-                        <div className="space-y-1 text-xs">
-=======
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-xs">
->>>>>>> testes
                           <div className="bg-gray-50 p-2 rounded">DESCONTO10 - 10% off</div>
                           <div className="bg-gray-50 p-2 rounded">BEMVINDO - 15% off</div>
                           <div className="bg-gray-50 p-2 rounded">FRETEGRATIS - Frete grátis</div>
@@ -324,37 +289,22 @@ export default function CarrinhoPage() {
                     <div className="bg-green-50 p-3 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
-<<<<<<< HEAD
-                          <span className="text-green-800 font-semibold">Cupom {cupomAplicado.codigo} aplicado!</span>
-                          <div className="text-sm text-green-600">
-=======
                           <span className="text-green-800 font-semibold text-sm md:text-base">Cupom {cupomAplicado.codigo} aplicado!</span>
                           <div className="text-xs md:text-sm text-green-600">
->>>>>>> testes
                             {cupomAplicado.tipo === "percentual"
                               ? `${cupomAplicado.desconto}% de desconto`
                               : `R$ ${cupomAplicado.desconto.toFixed(2)} de desconto`}
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-<<<<<<< HEAD
-                          <span className="font-bold text-green-600">-R$ {desconto.toFixed(2)}</span>
-=======
                           <span className="font-bold text-green-600 text-sm md:text-base">-R$ {desconto.toFixed(2)}</span>
->>>>>>> testes
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={removerCupom}
-<<<<<<< HEAD
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <X className="w-4 h-4" />
-=======
                             className="text-red-500 hover:text-red-700 p-1"
                           >
                             <X className="w-3 h-3 md:w-4 md:h-4" />
->>>>>>> testes
                           </Button>
                         </div>
                       </div>
@@ -383,11 +333,7 @@ export default function CarrinhoPage() {
                       </span>
                     </div>
                     {desconto > 0 && (
-<<<<<<< HEAD
-                      <div className="flex justify-between text-green-600">
-=======
                       <div className="flex justify-between text-sm md:text-base text-green-600">
->>>>>>> testes
                         <span>Desconto ({cupomAplicado?.codigo})</span>
                         <span>-R$ {desconto.toFixed(2)}</span>
                       </div>
@@ -426,11 +372,7 @@ export default function CarrinhoPage() {
                   </div>
 
                   <Link href="/checkout">
-<<<<<<< HEAD
-                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3">
-=======
                     <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-sm md:text-base">
->>>>>>> testes
                       <Lock className="w-4 h-4 mr-2" />
                       Finalizar Compra
                     </Button>

@@ -1,11 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-<<<<<<< HEAD
-import { Search, Filter, Heart, ShoppingCart, Star, Leaf, Zap, TrendingUp } from "lucide-react"
-=======
 import { Search, Filter, Heart, ShoppingCart, Star, Leaf, Zap, TrendingUp, Menu, X } from 'lucide-react'
->>>>>>> testes
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -24,10 +20,7 @@ export default function DescontAiPlatform() {
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
-<<<<<<< HEAD
-=======
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
->>>>>>> testes
 
   const { addToCart, getTotalItems } = useCart()
 
@@ -103,10 +96,6 @@ export default function DescontAiPlatform() {
       .replace(/\s+/g, "-")
       .replace(/&/g, "e")
       .replace(/[^a-z0-9-]/g, "")
-<<<<<<< HEAD
-    console.log(`Store: ${storeName} -> Slug: ${slug}`)
-=======
->>>>>>> testes
     return slug
   }
 
@@ -120,10 +109,6 @@ export default function DescontAiPlatform() {
     setIsSearching(true)
     setShowSearchResults(true)
 
-<<<<<<< HEAD
-    // Simular delay de busca
-=======
->>>>>>> testes
     setTimeout(() => {
       const results = allProducts
         .filter(
@@ -131,21 +116,13 @@ export default function DescontAiPlatform() {
             product.name.toLowerCase().includes(query.toLowerCase()) ||
             product.storeName.toLowerCase().includes(query.toLowerCase()),
         )
-<<<<<<< HEAD
-        .slice(0, 8) // Limitar a 8 resultados
-=======
         .slice(0, 8)
->>>>>>> testes
 
       setSearchResults(results)
       setIsSearching(false)
     }, 300)
   }
 
-<<<<<<< HEAD
-  // Debounce para a busca
-=======
->>>>>>> testes
   const debounceSearch = (func: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout
     return (...args: any[]) => {
@@ -197,13 +174,9 @@ export default function DescontAiPlatform() {
                   Eco-Friendly
                 </Badge>
               </div>
-<<<<<<< HEAD
-              <div className="flex items-center space-x-4">
-=======
 
               {/* Desktop Navigation */}
               <div className="hidden lg:flex items-center space-x-4">
->>>>>>> testes
                 <div className="relative search-container">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 z-10" />
                   <Input
@@ -555,11 +528,7 @@ export default function DescontAiPlatform() {
         </section>
 
         {/* Main Content */}
-<<<<<<< HEAD
-        <main className="container mx-auto px-4 py-8">
-=======
         <main className="container mx-auto px-4 py-4 md:py-8">
->>>>>>> testes
           {selectedCategory === "all" && !searchTerm ? (
             // Store View
             <div className="space-y-6 md:space-y-12">
@@ -577,19 +546,11 @@ export default function DescontAiPlatform() {
                         height={40}
                         className="md:w-[60px] md:h-[60px] rounded-full bg-white p-2"
                       />
-<<<<<<< HEAD
-                      <div>
-                        <Link href={`/loja/${getStoreSlug(store.name)}`}>
-                          <h3 className="text-2xl font-bold hover:underline cursor-pointer">{store.name}</h3>
-                        </Link>
-                        <p className="opacity-90">{store.category}</p>
-=======
                       <div className="flex-1">
                         <Link href={`/loja/${getStoreSlug(store.name)}`}>
                           <h3 className="text-lg md:text-2xl font-bold hover:underline cursor-pointer">{store.name}</h3>
                         </Link>
                         <p className="text-sm md:text-base opacity-90">{store.category}</p>
->>>>>>> testes
                       </div>
                       <div>
                         <Badge variant="secondary" className="bg-white/20 text-white text-xs md:text-sm">
@@ -600,13 +561,8 @@ export default function DescontAiPlatform() {
                     </div>
                   </div>
 
-<<<<<<< HEAD
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-=======
                   <div className="p-4 md:p-6">
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
->>>>>>> testes
                       {store.products.slice(0, 5).map((product) => (
                         <Card
                           key={product.id}
@@ -671,15 +627,9 @@ export default function DescontAiPlatform() {
                         </Card>
                       ))}
                     </div>
-<<<<<<< HEAD
-                    <div className="text-center mt-6">
-                      <Link href={`/loja/${getStoreSlug(store.name)}`}>
-                        <Button variant="outline" className="bg-white/80 hover:bg-white">
-=======
                     <div className="text-center mt-4 md:mt-6">
                       <Link href={`/loja/${getStoreSlug(store.name)}`}>
                         <Button variant="outline" className="bg-white/80 hover:bg-white text-xs md:text-sm">
->>>>>>> testes
                           Ver todos os {store.products.length} produtos da {store.name}
                         </Button>
                       </Link>

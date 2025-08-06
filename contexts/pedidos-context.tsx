@@ -13,17 +13,10 @@ export interface PedidoItem {
 export interface Pedido {
   id: string
   numero: string
-<<<<<<< HEAD
-  status: "confirmado" | "preparando" | "pronto" | "entregue"
+  status: string // Mudança aqui - de union type para string
   dataCompra: string
   dataEntrega: string
   tipoEntrega: "entrega" | "retirada"
-=======
-  status: string
-  dataCompra: string
-  dataEntrega: string
-  tipoEntrega: string
->>>>>>> testes
   total: number
   desconto: number
   frete: number
@@ -58,9 +51,9 @@ export interface Pedido {
 
 interface PedidosContextType {
   pedidos: Pedido[]
-  criarPedido: (dadosPedido: Omit<Pedido, "id" | "numero" | "timeline">) => string
+  criarPedido: (dadosPedido: Omit<Pedido, "id" | "numero" | "timeline" | "status">) => string
   buscarPedido: (id: string) => Pedido | null
-  atualizarStatusPedido: (id: string, novoStatus: Pedido["status"]) => void
+  atualizarStatusPedido: (id: string, novoStatus: string) => void
 }
 
 const PedidosContext = createContext<PedidosContextType | undefined>(undefined)
@@ -68,7 +61,7 @@ const PedidosContext = createContext<PedidosContextType | undefined>(undefined)
 export function PedidosProvider({ children }: { children: ReactNode }) {
   const [pedidos, setPedidos] = useState<Pedido[]>([])
 
-  const criarPedido = (dadosPedido: Omit<Pedido, "id" | "numero" | "timeline">): string => {
+  const criarPedido = (dadosPedido: Omit<Pedido, "id" | "numero" | "timeline" | "status">): string => {
     const id = Date.now().toString().slice(-6)
     const numero = `#PB${id}`
 
@@ -129,7 +122,7 @@ export function PedidosProvider({ children }: { children: ReactNode }) {
     return pedidos.find((pedido) => pedido.id === id) || null
   }
 
-  const atualizarStatusPedido = (id: string, novoStatus: Pedido["status"]) => {
+  const atualizarStatusPedido = (id: string, novoStatus: string) => {
     setPedidos((prev) =>
       prev.map((pedido) => {
         if (pedido.id === id) {
