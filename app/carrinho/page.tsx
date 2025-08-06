@@ -15,6 +15,7 @@ import {
   Tag,
   Star,
   Lock,
+  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,13 +27,24 @@ import Link from "next/link"
 import { useCart } from "@/contexts/cart-context"
 
 export default function CarrinhoPage() {
-  const { items, removeFromCart, updateQuantity, getTotalItems, getSubtotal, getTotalPrice } = useCart()
+  const {
+    items,
+    removeFromCart,
+    updateQuantity,
+    getTotalItems,
+    getSubtotal,
+    getTotalPrice,
+    getDiscountAmount,
+    cupomAplicado,
+    aplicarCupom,
+    removerCupom,
+  } = useCart()
+
   const [cep, setCep] = useState("")
   const [cupom, setCupom] = useState("")
   const [frete, setFrete] = useState(0)
   const [prazoEntrega, setPrazoEntrega] = useState("")
-  const [cupomAplicado, setCupomAplicado] = useState("")
-  const [desconto, setDesconto] = useState(0)
+  const [cupomError, setCupomError] = useState("")
 
   const calcularFrete = () => {
     if (cep.length === 8) {
@@ -43,24 +55,19 @@ export default function CarrinhoPage() {
     }
   }
 
-  const aplicarCupom = () => {
-    const cuponsValidos = {
-      DESCONTO10: 10,
-      BEMVINDO: 15,
-      FRETEGRATIS: 0,
-    }
-
-    if (cuponsValidos[cupom as keyof typeof cuponsValidos]) {
-      const descontoPercentual = cuponsValidos[cupom as keyof typeof cuponsValidos]
-      const valorDesconto = (getSubtotal() * descontoPercentual) / 100
-      setDesconto(valorDesconto)
-      setCupomAplicado(cupom)
+  const handleAplicarCupom = () => {
+    setCupomError("")
+    const sucesso = aplicarCupom(cupom)
+    if (sucesso) {
       setCupom("")
+    } else {
+      setCupomError("Cupom inválido ou expirado")
     }
   }
 
   const subtotal = getSubtotal()
   const freteCalculado = subtotal > 200 ? 0 : frete || 15.9
+  const desconto = getDiscountAmount()
   const total = subtotal + freteCalculado - desconto
 
   if (items.length === 0) {
@@ -263,29 +270,57 @@ export default function CarrinhoPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex space-x-2 mb-4">
-                    <Input
-                      placeholder="Digite o cupom"
-                      value={cupom}
-                      onChange={(e) => setCupom(e.target.value.toUpperCase())}
-                    />
-                    <Button onClick={aplicarCupom}>Aplicar</Button>
-                  </div>
-                  {cupomAplicado && (
+                  {!cupomAplicado ? (
+                    <div className="space-y-4">
+                      <div className="flex space-x-2">
+                        <Input
+                          placeholder="Digite o cupom"
+                          value={cupom}
+                          onChange={(e) => {
+                            setCupom(e.target.value.toUpperCase())
+                            setCupomError("")
+                          }}
+                        />
+                        <Button onClick={handleAplicarCupom} disabled={!cupom.trim()}>
+                          Aplicar
+                        </Button>
+                      </div>
+                      {cupomError && <div className="text-sm text-red-600 bg-red-50 p-2 rounded">{cupomError}</div>}
+                      <div className="space-y-2">
+                        <div className="text-sm font-semibold">Cupons Disponíveis:</div>
+                        <div className="space-y-1 text-xs">
+                          <div className="bg-gray-50 p-2 rounded">DESCONTO10 - 10% off</div>
+                          <div className="bg-gray-50 p-2 rounded">BEMVINDO - 15% off</div>
+                          <div className="bg-gray-50 p-2 rounded">FRETEGRATIS - Frete grátis</div>
+                          <div className="bg-gray-50 p-2 rounded">SAVE20 - 20% off</div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
                     <div className="bg-green-50 p-3 rounded-lg">
                       <div className="flex items-center justify-between">
-                        <span className="text-green-800">Cupom {cupomAplicado} aplicado!</span>
-                        <span className="font-bold text-green-600">-R$ {desconto.toFixed(2)}</span>
+                        <div>
+                          <span className="text-green-800 font-semibold">Cupom {cupomAplicado.codigo} aplicado!</span>
+                          <div className="text-sm text-green-600">
+                            {cupomAplicado.tipo === "percentual"
+                              ? `${cupomAplicado.desconto}% de desconto`
+                              : `R$ ${cupomAplicado.desconto.toFixed(2)} de desconto`}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-bold text-green-600">-R$ {desconto.toFixed(2)}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={removerCupom}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}
-                  <div className="mt-4 space-y-2">
-                    <div className="text-sm font-semibold">Cupons Disponíveis:</div>
-                    <div className="space-y-1 text-xs">
-                      <div className="bg-gray-50 p-2 rounded">DESCONTO10 - 10% off</div>
-                      <div className="bg-gray-50 p-2 rounded">BEMVINDO - 15% off</div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
 
@@ -310,7 +345,7 @@ export default function CarrinhoPage() {
                     </div>
                     {desconto > 0 && (
                       <div className="flex justify-between text-green-600">
-                        <span>Desconto</span>
+                        <span>Desconto ({cupomAplicado?.codigo})</span>
                         <span>-R$ {desconto.toFixed(2)}</span>
                       </div>
                     )}
@@ -327,9 +362,12 @@ export default function CarrinhoPage() {
                       <div className="text-sm text-green-800">Você está economizando</div>
                       <div className="text-lg font-bold text-green-600">
                         R${" "}
-                        {items
-                          .reduce((acc, item) => acc + (item.originalPrice - item.discountPrice) * item.quantity, 0)
-                          .toFixed(2)}
+                        {(
+                          items.reduce(
+                            (acc, item) => acc + (item.originalPrice - item.discountPrice) * item.quantity,
+                            0,
+                          ) + desconto
+                        ).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -344,10 +382,12 @@ export default function CarrinhoPage() {
                     <div className="text-xs text-gray-600">💳 Até 12x sem juros no cartão</div>
                   </div>
 
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3">
-                    <Lock className="w-4 h-4 mr-2" />
-                    Finalizar Compra
-                  </Button>
+                  <Link href="/checkout">
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-3">
+                      <Lock className="w-4 h-4 mr-2" />
+                      Finalizar Compra
+                    </Button>
+                  </Link>
 
                   <div className="text-center space-y-2">
                     <div className="flex items-center justify-center space-x-2 text-xs text-gray-600">
