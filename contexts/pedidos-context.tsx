@@ -13,10 +13,10 @@ export interface PedidoItem {
 export interface Pedido {
   id: string
   numero: string
-  status: "confirmado" | "preparando" | "pronto" | "entregue"
+  status: string
   dataCompra: string
   dataEntrega: string
-  tipoEntrega: "entrega" | "retirada"
+  tipoEntrega: string
   total: number
   desconto: number
   frete: number
